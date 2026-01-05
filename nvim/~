@@ -1,0 +1,159 @@
+-- =========================================================
+-- Bootstrap lazy.nvim
+-- =========================================================
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.loop.fs_stat(lazypath) then
+  vim.fn.system({
+    "git",
+    "clone",
+    "--filter=blob:none",
+    "https://github.com/folke/lazy.nvim.git",
+    lazypath,
+  })
+end
+vim.opt.rtp:prepend(lazypath)
+
+-- =========================================================
+-- Leader
+-- =========================================================
+vim.g.mapleader = " "
+
+-- =========================================================
+-- Core editor settings
+-- =========================================================
+vim.opt.number = true
+vim.opt.relativenumber = true
+vim.opt.expandtab = true
+vim.opt.shiftwidth = 4
+vim.opt.tabstop = 4
+vim.opt.termguicolors = true
+vim.opt.signcolumn = "yes"
+vim.opt.updatetime = 250
+vim.opt.completeopt = { "menu", "menuone", "noselect" }
+
+-- Old-school ergonomics
+vim.opt.cursorline = true
+vim.opt.cursorcolumn = false
+vim.opt.splitright = true
+vim.opt.splitbelow = true
+vim.opt.showmode = false
+
+-- Calm diagnostics
+vim.diagnostic.config({
+  virtual_text = false,
+  underline = true,
+  signs = true,
+  update_in_insert = false,
+})
+
+-- =========================================================
+-- Plugins
+-- =========================================================
+require("lazy").setup({
+  { "williamboman/mason.nvim" },
+  { "williamboman/mason-lspconfig.nvim" },
+
+  { "hrsh7th/nvim-cmp" },
+  { "hrsh7th/cmp-nvim-lsp" },
+  { "L3MON4D3/LuaSnip" },
+
+  { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
+
+  { "stevearc/conform.nvim" },
+
+  { "nvim-lualine/lualine.nvim" },
+
+  { "mfussenegger/nvim-dap" },
+  { "rcarriga/nvim-dap-ui" },
+  { "nvim-neotest/nvim-nio" },
+})
+
+-- =========================================================
+-- Load modules
+-- =========================================================
+require("cmp_config")
+require("lsp")
+require("format")
+--require("treesitter")
+require("dap")
+
+-- =========================================================
+-- Colorscheme: ELFLORD (pure black)
+-- =========================================================
+vim.opt.background = "dark"
+vim.cmd.colorscheme("elflord")
+
+-- =========================================================
+-- Highlight overrides (SYSTEMS-OPTIMIZED)
+-- =========================================================
+local set = vim.api.nvim_set_hl
+
+-- BRIGHT semantic yellow for types / qualifiers
+local yellow = "#FFFF00"   -- classic terminal yellow
+
+-- Base
+set(0, "Normal",   { fg = "#E0E0E0", bg = "#000000" })
+set(0, "NormalNC", { fg = "#E0E0E0", bg = "#000000" })
+
+-- Control flow (quiet)
+set(0, "Keyword",      { fg = "#C0C0C0" })
+set(0, "Conditional", { fg = "#C0C0C0" })
+set(0, "Repeat",      { fg = "#C0C0C0" })
+
+-- TYPES / QUALIFIERS (BRIGHT & OBVIOUS)
+set(0, "Type",         { fg = yellow, bold = true })   -- void, int, struct
+set(0, "StorageClass", { fg = yellow, bold = true })   -- static, extern
+set(0, "Qualifier",    { fg = yellow, bold = true })   -- const, volatile
+
+-- Functions
+set(0, "Function", { fg = "#FFFFFF", bold = true })
+
+-- Constants / macros
+set(0, "Constant", { fg = "#D0D0D0" })
+set(0, "Macro",    { fg = "#D0D0D0" })
+
+-- Strings
+set(0, "String", { fg = "#A0A0A0" })
+
+-- Numbers
+set(0, "Number", { fg = "#D0D0D0" })
+
+-- Comments (Emacs-like)
+set(0, "Comment", { fg = "#707070", italic = true })
+
+-- Line numbers (quiet)
+set(0, "LineNr",        { fg = "#505050", bg = "#000000" })
+set(0, "LineNrAbove",  { fg = "#404040" })
+set(0, "LineNrBelow",  { fg = "#404040" })
+set(0, "CursorLineNr", { fg = "#A0A0A0", bold = true })
+
+-- Diagnostics (subtle)
+set(0, "DiagnosticError", { fg = "#D75F5F" })
+set(0, "DiagnosticWarn",  { fg = "#D7AF5F" })
+set(0, "DiagnosticInfo",  { fg = "#5F87AF" })
+set(0, "DiagnosticHint",  { fg = "#5F875F" })
+
+-- =========================================================
+-- Treesitter links (C / systems correct)
+-- =========================================================
+vim.cmd("hi link @type Type")
+vim.cmd("hi link @type.qualifier Type")
+vim.cmd("hi link @storageclass StorageClass")
+vim.cmd("hi link @keyword.storage StorageClass")
+vim.cmd("hi link @keyword.type Type")
+vim.cmd("hi link @function Function")
+vim.cmd("hi link @string String")
+vim.cmd("hi link @comment Comment")
+vim.cmd("hi link @constant Constant")
+
+-- =========================================================
+-- Lualine (minimal)
+-- =========================================================
+require("lualine").setup({
+  options = {
+    theme = "auto",
+    section_separators = "",
+    component_separators = "",
+  },
+})
+
