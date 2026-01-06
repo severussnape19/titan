@@ -76,6 +76,20 @@ void print_bits(unsigned int x) {
     putchar('\n');
 }
 
+void bitcount(unsigned x, int data[]) {
+    /* returns ones and zeroes */
+    int ones, zeros;
+    ones = zeros = 0;
+
+    for (int i = 0; x != 0; x >>= 1) {
+        if (x & 01)
+            ones++;
+        else 
+            zeros++;
+    }
+    data[0] = zeros;
+    data[1] = ones;
+}
 
 int main() {
     int x = 218;
