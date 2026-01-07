@@ -2,12 +2,13 @@
 #include <limits.h>
 #include <stdbool.h>
 
-#define BITS (sizeof(unsigned int) * CHAR_BIT - 1)
+#define WORD_SIZE (sizeof(unsigned) * CHAR_BIT)
 
 unsigned getbits(unsigned, int, int);
 unsigned setbits(unsigned, unsigned, int, int, bool);
 unsigned invertbits(unsigned, int, int, bool);
 unsigned invertbits_xor(unsigned, int, int, bool);
+unsigned rotatebits(unsigned, int, bool);
 void print_bits(unsigned int);
 
 unsigned getbits(unsigned x, int p, int n) {
@@ -67,8 +68,22 @@ unsigned invertbits_xor(unsigned x, int n, int p, bool view) {
     return x ^ mask;
 }
 
+unsigned rotatebits(unsigned x, int n, bool view) {
+    if (view) {
+        print_bits(x);
+        unsigned mask = ((1U << n) - 1); // & x
+        print_bits(mask);
+        unsigned A = x >> n;
+        print_bits(A);
+        unsigned B = (mask & x) << (WORD_SIZE - n);
+        print_bits(B);
+        //print_bits(A | B);
+    }
+    return (x >> n) | ((((1U << n) - 1) & x) << (WORD_SIZE - n));
+}
+
 void print_bits(unsigned int x) {
-    for (int i = BITS; i >= 0; i--) {
+    for (int i = WORD_SIZE - 1; i >= 0; i--) {
         putchar((x >> i) & 1 ? '1'  : '0');
         if (i % 4 == 0)
             putchar(' ');
@@ -91,6 +106,8 @@ void bitcount(unsigned x, int data[]) {
     data[1] = ones;
 }
 
+
+
 int main() {
     int x = 218;
     int y = 5;
@@ -101,7 +118,9 @@ int main() {
     print_bits(y);
     int result = setbits(x, y, p, n, 0);
     print_bits(result);
-*/
+
     invertbits(x, n, p, 1);
     invertbits_xor(x, n, p, 1);
+*/
+    print_bits(rotatebits(x, n, 1));
 }
